@@ -7,7 +7,8 @@ from ckeditor.fields import RichTextField
 
 class User(models.Model):
     """
-    User details:
+    User details: 
+    all registered users' details
 
     e.g.
     enrollment number- 20114041
@@ -25,6 +26,7 @@ class User(models.Model):
 class Project(models.Model):
     """
     Project details:
+    information about all ongoing projects
 
     e.g.
     id-"1"
@@ -44,6 +46,7 @@ class Project(models.Model):
 class List(models.Model):
     """
     List details:
+    all lists like todo, doing, done, etc added in projects
 
     e.g.
     id-"1"
@@ -57,6 +60,7 @@ class List(models.Model):
 class Card(models.Model):
     """
     Card details:
+    details of all cards corresponding to every list
 
     e.g.
     id-"1"
@@ -74,6 +78,7 @@ class Card(models.Model):
 class Comment(models.Model):
     """
     Comments added on Cards:
+    all the comments added of any card
 
     e.g.
     id-1
