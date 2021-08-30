@@ -46,7 +46,7 @@ class Project(models.Model):
 class List(models.Model):
     """
     List details:
-    all lists like todo, doing, done, etc added in projects
+    details of all lists like todo, doing, done, etc added in projects
 
     e.g.
     id-"1"
@@ -78,7 +78,7 @@ class Card(models.Model):
 class Comment(models.Model):
     """
     Comments added on Cards:
-    all the comments added of any card
+    all the comments added on any card
 
     e.g.
     id-1
