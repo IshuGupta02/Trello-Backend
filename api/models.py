@@ -1,36 +1,87 @@
+"""
+All models used in trello-backend
+"""
+
 from django.db import models
 from ckeditor.fields import RichTextField
 
-# Create your models here.
-class user(models.Model):
+class User(models.Model):
+    """
+    User details:
+
+    e.g.
+    enrollment number- 20114041
+    User_name- Ishu Gupta
+    admin- False
+    enabled- True
+    token=""    
+    """
     enrollment_no = models.IntegerField(primary_key=True)
-    user_name = models.CharField(max_length=100)
+    User_name = models.CharField(max_length=100)
     admin= models.BooleanField()
     enabled= models.BooleanField()
     token= models.CharField(max_length=200)
 
-class project(models.Model):
+class Project(models.Model):
+    """
+    Project details:
+
+    e.g.
+    id-"1"
+    Project_name- "Noticeboard"
+    wiki- ""
+    due_date- "24/10/2022"
+    members- 1,2,3
+    admins- 2,3
+    """
     id = models.IntegerField(primary_key=True)
-    project_name = models.CharField(max_length=100)
+    Project_name = models.CharField(max_length=100)
     wiki= RichTextField()
     due_date= models.DateField()
-    members= models.ManyToManyField(user, related_name="member")
-    admins= models.ManyToManyField(user, related_name="admins_project")
+    members= models.ManyToManyField(User, related_name="member")
+    admins= models.ManyToManyField(User, related_name="admins_Project")
 
-class list(models.Model):
+class List(models.Model):
+    """
+    List details:
+
+    e.g.
+    id-"1"
+    List_name- "todo"
+    Project- 1
+    """
     id=models.IntegerField(primary_key=True)
-    list_name = models.CharField(max_length=100)
-    project = models.ForeignKey(to=project, on_delete=models.CASCADE)
+    List_name = models.CharField(max_length=100)
+    Project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
 
-class card(models.Model):
+class Card(models.Model):
+    """
+    Card details:
+
+    e.g.
+    id-"1"
+    Card_name- "Make views"
+    List- 1
+    assigned- 1,2
+    description-"complete views of trello app"
+    """
     id= models.IntegerField(primary_key=True)
-    card_name = models.CharField(max_length=100)
-    list = models.ForeignKey(to=list, on_delete=models.CASCADE)
-    assigned= models.ManyToManyField(user)
+    Card_name = models.CharField(max_length=100)
+    List = models.ForeignKey(to=List, on_delete=models.CASCADE)
+    assigned= models.ManyToManyField(User)
     description = models.CharField(max_length=500)
 
-class comment(models.Model):
+class Comment(models.Model):
+    """
+    Comments added on Cards:
+
+    e.g.
+    id-1
+    User- 1
+    Card- 2
+    Comment- "make sure to use pylint"
+    """
     id= models.IntegerField(primary_key=True)
-    user= models.ForeignKey(to=user, on_delete=models.CASCADE)
-    card= models.ForeignKey(to=card, on_delete=models.CASCADE)
-    comment=models.CharField(max_length=100)
+    User= models.ForeignKey(to=User, on_delete=models.CASCADE)
+    Card= models.ForeignKey(to=Card, on_delete=models.CASCADE)
+    Comment=models.CharField(max_length=100)
