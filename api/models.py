@@ -21,7 +21,6 @@ class User(models.Model):
     User_name = models.CharField(max_length=100)
     admin= models.BooleanField()
     enabled= models.BooleanField()
-    token= models.CharField(max_length=200)
 
 class Project(models.Model):
     """
@@ -39,6 +38,7 @@ class Project(models.Model):
     id = models.IntegerField(primary_key=True)
     Project_name = models.CharField(max_length=100)
     wiki= RichTextField()
+    # date_created = models.DateField()
     due_date= models.DateField()
     members= models.ManyToManyField(User, related_name="member")
     admins= models.ManyToManyField(User, related_name="admins_Project")
@@ -89,4 +89,5 @@ class Comment(models.Model):
     id= models.IntegerField(primary_key=True)
     User= models.ForeignKey(to=User, on_delete=models.CASCADE)
     Card= models.ForeignKey(to=Card, on_delete=models.CASCADE)
+    # date_created = models.DateField()
     Comment=models.CharField(max_length=100)
