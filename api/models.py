@@ -1,11 +1,11 @@
 """
 All models used in trello-backend
 """
-
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from ckeditor.fields import RichTextField
 
-class User(models.Model):
+class User(AbstractUser):
     """
     User details: 
     all registered users' details
@@ -19,8 +19,8 @@ class User(models.Model):
     """
     enrollment_no = models.IntegerField(primary_key=True)
     User_name = models.CharField(max_length=100)
-    admin= models.BooleanField()
-    enabled= models.BooleanField()
+    admin= models.BooleanField(default=False)
+    enabled= models.BooleanField(default=True)
 
 class Project(models.Model):
     """
@@ -38,7 +38,7 @@ class Project(models.Model):
     id = models.IntegerField(primary_key=True)
     Project_name = models.CharField(max_length=100)
     wiki= RichTextField()
-    # date_created = models.DateField()
+    date_created = models.DateField()
     due_date= models.DateField()
     members= models.ManyToManyField(User, related_name="member")
     admins= models.ManyToManyField(User, related_name="admins_Project")
@@ -89,5 +89,7 @@ class Comment(models.Model):
     id= models.IntegerField(primary_key=True)
     User= models.ForeignKey(to=User, on_delete=models.CASCADE)
     Card= models.ForeignKey(to=Card, on_delete=models.CASCADE)
-    # date_created = models.DateField()
+    date_created = models.DateField()
     Comment=models.CharField(max_length=100)
+
+
