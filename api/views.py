@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
 import json
 import requests
+from requests import Response
 from .login_config import config
 from . import models
 from django.contrib.auth import login, logout
@@ -21,18 +22,18 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
 
-    @action(detail=True, url_path='login')
-    def login1(req):
-        """
-        It will redirect to oauth page
-        from /api/login--> oauth
-        """
-        print("login1")
-        url = f"https://channeli.in/oauth/authorise/?client_id={config['CLIENT_ID']}&redirect_uri={config['REDIRECT_URI']}&state={config['STATE_STRING']}"
-        return HttpResponseRedirect(url)
+    # @action(methods=['POST', 'GET', 'OPTIONS'], detail=True, url_path='login')
+    # def login1(req):
+    #     """
+    #     It will redirect to oauth page
+    #     from /api/login--> oauth
+    #     """
+    #     print("login1")
+    #     url = f"https://channeli.in/oauth/authorise/?client_id={config['CLIENT_ID']}&redirect_uri={config['REDIRECT_URI']}&state={config['STATE_STRING']}"
+    #     return HttpResponseRedirect(url)
 
-    @action(detail=True, url_path='login/OAuth')
-    def login2(req):
+    @action(detail=False, url_path='OAuth', url_name='login-OAuth')
+    def login2(self, req):
         """
         exchange auth_code (received after login through channeli) with access_token which is further used to get the user's data
         """
@@ -87,7 +88,7 @@ class UserViewSet(viewsets.ModelViewSet):
             user.save()
             print("saved")
         login(request=req, user=user)
-        return HttpResponse("all okay!")
+        return HttpResponse("done!")
 
 
 
