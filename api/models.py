@@ -4,6 +4,7 @@ All models used in trello-backend
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from ckeditor.fields import RichTextField
+from datetime import datetime
 
 class User(AbstractUser):
     """
@@ -17,7 +18,7 @@ class User(AbstractUser):
     enabled- True
     token=""    
     """
-    enrollment_no = models.IntegerField(primary_key=True)
+    enrollment_no = models.IntegerField(default=0)
     User_name = models.CharField(max_length=100)
     admin= models.BooleanField(default=False)
     enabled= models.BooleanField(default=True)
@@ -38,7 +39,7 @@ class Project(models.Model):
     id = models.IntegerField(primary_key=True)
     Project_name = models.CharField(max_length=100)
     wiki= RichTextField()
-    date_created = models.DateField()
+    date_created = models.DateField(auto_now_add=True)
     due_date= models.DateField()
     members= models.ManyToManyField(User, related_name="member")
     admins= models.ManyToManyField(User, related_name="admins_Project")
@@ -72,7 +73,7 @@ class Card(models.Model):
     id= models.IntegerField(primary_key=True)
     Card_name = models.CharField(max_length=100)
     List = models.ForeignKey(to=List, on_delete=models.CASCADE)
-    assigned= models.ManyToManyField(User)
+    assigned= models.ManyToManyField(User, related_name="mycards")
     description = models.CharField(max_length=500)
 
 class Comment(models.Model):
@@ -89,7 +90,7 @@ class Comment(models.Model):
     id= models.IntegerField(primary_key=True)
     User= models.ForeignKey(to=User, on_delete=models.CASCADE)
     Card= models.ForeignKey(to=Card, on_delete=models.CASCADE)
-    date_created = models.DateField()
+    date_created = models.DateField(auto_now_add=True)
     Comment=models.CharField(max_length=100)
 
 
