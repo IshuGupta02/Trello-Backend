@@ -15,7 +15,7 @@ from rest_framework import viewsets
 from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSerializer,CommentSerializer
 from rest_framework.decorators import action
 from rest_framework.views import APIView
-from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Project, IsTeamMemberOrReadOnly_Card
+from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Project, IsTeamMemberOrReadOnly_Card, Not_allowed
 from rest_framework.permissions import IsAuthenticated
 
 class LoginViewSet(viewsets.ModelViewSet):
@@ -132,6 +132,8 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         if self.request.method == 'GET':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
+        elif self.request.method == 'POST':
+            self.permission_classes = [Not_allowed]
         else:
             self.permission_classes = [IsAuthenticated,IsUserEnabled, IsAdmin]
         return super(UserViewSet, self).get_permissions()
