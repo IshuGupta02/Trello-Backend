@@ -88,8 +88,6 @@ class IsTeamMemberOrReadOnly_Card(permissions.BasePermission):
                         return True
         return False
 
-
-
 class IsAdmin(permissions.BasePermission):
     """
     App admins have extra powers of changing any app admin to normal member or vice versa

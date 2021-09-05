@@ -21,6 +21,9 @@ from rest_framework.permissions import IsAuthenticated
 class LoginViewSet(viewsets.ModelViewSet):
     """
     A viewset that provides the standard actions like login, logout
+    1. if user exists--> login
+    2. if new user comes--> create a new User Object and login
+    3. logout
     """
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
@@ -93,7 +96,23 @@ class LoginViewSet(viewsets.ModelViewSet):
         login(request=req, user=user)
         return HttpResponse("done!")
 
+    @action(methods=['GET'], detail=False, url_path='logout', url_name='login-logout')
+    def logout_(self, request):
+        """
+        logout user
+        """
+        if request.user.is_authenticated:
+            logout(request)
+            return JsonResponse({'status': 'successful'})
+        else:
+            return HttpResponseForbidden()
+
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    1. get all users data
+    2. update a users' Admin Status
+    3. update a users' Enabled Status
+    """
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
 
@@ -107,10 +126,10 @@ class UserViewSet(viewsets.ModelViewSet):
     #     cards_data=CardSerializer(request.user.mycards.all(), many=True)
     #     return Response(cards_data.data)
 
-    queryset = models.User.objects.all()
-    serializer_class = UserSerializer
-
     def get_permissions(self):
+        """
+        everbody can get details of users but only admins can enable/disable, change to admin/remove from admin
+        """
         if self.request.method == 'GET':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
@@ -118,6 +137,12 @@ class UserViewSet(viewsets.ModelViewSet):
         return super(UserViewSet, self).get_permissions()
 
 class ProjectViewSet(viewsets.ModelViewSet):
+    """
+    1. get all projects
+    2. update a project- members, admins, wiki, project_name, due_date
+    3. delete a project
+    4. create new project
+    """
     queryset = models.Project.objects.all()
     serializer_class = ProjectSerializer
 
@@ -136,18 +161,31 @@ class ProjectViewSet(viewsets.ModelViewSet):
     #     serializer.save()
 
     def get_permissions(self):
+        """
+        1. everyone can get information about any project or create a new project
+        2. only project admins or app admins can add or remove members, project_admins, change due_date, edit wiki, etc
+        """
         if self.request.method == 'GET' or self.request.method == 'POST':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
             self.permission_classes = [IsAuthenticated,IsUserEnabled, IsAdminOrProjectAdminOrReadOnly]
         return super(ProjectViewSet, self).get_permissions()
 
-
 class ListViewSet(viewsets.ModelViewSet):
+    """
+    1. get all lists
+    2. create a new list in a project
+    3. update a list- list_name
+    4. delete a list
+    """
     queryset = models.List.objects.all()
     serializer_class = ListSerializer
 
     def get_permissions(self):
+        """
+        anyone can get information about any list
+        only project members can create/update/delete a list
+        """
         if self.request.method == 'GET':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
@@ -155,13 +193,22 @@ class ListViewSet(viewsets.ModelViewSet):
 
         return super(ListViewSet, self).get_permissions()
 
-
 class CardViewSet(viewsets.ModelViewSet):
+    """
+    1. get all cards
+    2. create a new card in a project
+    3. update a card- card_name, assigned_to,description
+    4. delete a card
+    """
 
     queryset = models.Card.objects.all()
     serializer_class = CardSerializer
 
     def get_permissions(self):
+        """
+        anyone can get information about any card
+        only project members can create/update/delete a card
+        """
         if self.request.method == 'GET':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
@@ -170,11 +217,20 @@ class CardViewSet(viewsets.ModelViewSet):
         return super(CardViewSet, self).get_permissions()
 
 class CommentViewSet(viewsets.ModelViewSet):
+    """
+    1. get all comments
+    2. update a comment
+    3. create a comment
+    """
 
     queryset = models.Comment.objects.all()
     serializer_class = CommentSerializer
 
     def get_permissions(self):
+        """
+        everyone can view comments/ create a new comment
+        only comment creator can change it
+        """
         if self.request.method == 'GET' or self.request.method == 'POST':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:

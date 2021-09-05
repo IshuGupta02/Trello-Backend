@@ -92,5 +92,3 @@ class Comment(models.Model):
     Card= models.ForeignKey(to=Card, on_delete=models.CASCADE)
     date_created = models.DateField(auto_now_add=True)
     Comment=models.CharField(max_length=100)
-
-
