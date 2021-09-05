@@ -2,14 +2,14 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import LoginViewSet, UserViewSet, ProjectViewSet
+from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet
 from django.conf.urls import include
 
 router = DefaultRouter()
 router.register(r'login', LoginViewSet)
 router.register(r'project', ProjectViewSet)
 router.register(r'user', UserViewSet)
-# router.register(r'dashboard', Dashboard)
+router.register(r'list', ListViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

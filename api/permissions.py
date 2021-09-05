@@ -11,7 +11,7 @@ class IsUserEnabled(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        if not request.User.enabled:
+        if not request.user.enabled:
             return False
         return True
 
@@ -25,15 +25,14 @@ class IsAdminOrProjectAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         for p in User.object.all().iterator():
-            if p.admin and p == request.User:
+            if p.admin and p == request.user:
                 return True
-
         for member in obj.admins:
-            if request.User==member
+            if request.user==member
                 return True
         return False
 
-class IsTeamMemberOrReadOnly(permissions.BasePermission):
+class IsTeamMemberOrReadOnly_Project(permissions.BasePermission):
     """
     Changing anything in a project is only allowed to project members
     All others can only see the project
@@ -42,10 +41,54 @@ class IsTeamMemberOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
+        for p in User.object.all().iterator():
+            if p.admin and p == request.user:
+                return True
         for member in obj.members:
-            if member == request.User
+            if member == request.user
                 return True
         return False
+
+class IsTeamMemberOrReadOnly_List(permissions.BasePermission):
+    """
+    Changing anything in a project is only allowed to project members
+    All others can only see the project
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        for p in User.object.all().iterator():
+            if p.admin and p == request.user:
+                return True
+        for project in Project.object.all().iterator():
+            if project==obj.Project:
+                for member in project.members:
+                    if request.user == member
+                        return True
+
+        return False
+
+class IsTeamMemberOrReadOnly_Card(permissions.BasePermission):
+    """
+    Changing anything in a project is only allowed to project members
+    All others can only see the project
+    """
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        for p in User.object.all().iterator():
+            if p.admin and p == request.user:
+                return True
+        for list in List.objects.all().iterator():
+            if obj.List==list:
+                for member in list.Project.members:
+                    if member==request.user:
+                        return True
+        return False
+
+
 
 class IsAdmin(permissions.BasePermission):
     """

@@ -15,6 +15,8 @@ from rest_framework import viewsets
 from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSerializer,CommentSerializer
 from rest_framework.decorators import action
 from rest_framework.views import APIView
+from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Project, IsTeamMemberOrReadOnly_Card
+from rest_framework.permissions import IsAuthenticated
 
 class LoginViewSet(viewsets.ModelViewSet):
     """
@@ -95,36 +97,86 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
 
-    @action(methods= ['GET'], detail=False, url_path='myprojects', url_name='user-myprojects')
-    def projects(self, request):
-        projects_data=ProjectSerializer(request.user.member.all(), many=True)
-        return Response(projects_data.data)
+    # @action(methods= ['GET'], detail=False, url_path='myprojects', url_name='user-myprojects')
+    # def projects(self, request):
+    #     projects_data=ProjectSerializer(request.user.member.all(), many=True)
+    #     return Response(projects_data.data)
+    #
+    # @action(methods= ['GET'],detail=False, url_path='mycards', url_name='user-mycards')
+    # def cards(self, request):
+    #     cards_data=CardSerializer(request.user.mycards.all(), many=True)
+    #     return Response(cards_data.data)
 
-    @action(methods= ['GET'],detail=False, url_path='mycards', url_name='user-mycards')
-    def cards(self, request):
-        cards_data=CardSerializer(request.user.mycards.all(), many=True)
-        return Response(cards_data.data)
+    queryset = models.User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsUserEnabled, IsAuthenticated]
+        else:
+            self.permission_classes = [IsAuthenticated,IsUserEnabled, IsAdmin]
+        return super(UserViewSet, self).get_permissions()
 
 class ProjectViewSet(viewsets.ModelViewSet):
     queryset = models.Project.objects.all()
     serializer_class = ProjectSerializer
 
-    @action(methods=['GET'], detail=False, url_path='list', url_name='project-list')
-    def list_project(self, request):
-        proj= models.Project.objects.all()
-        proj_data=ProjectSerializer(proj, many=True)
-        return Response(proj_data.data)
-
-    @action(methods=['POST'], detail=False, url_path='create', url_name='project-create')
-    def create_project(self, request):
-        proj_data=ProjectSerializer(proj, many=True)
-        return Response(proj_data.data)
+    # @action(methods=['GET'], detail=False, url_path='list', url_name='project-list')
+    # def list_project(self, request):
+    #     proj= models.Project.objects.all()
+    #     proj_data=ProjectSerializer(proj, many=True)
+    #     return Response(proj_data.data)
+    #
+    # @action(methods=['POST'], detail=False, url_path='create', url_name='project-create')
+    # def create_project(self, request):
+    #     proj_data=ProjectSerializer(proj, many=True)
+    #     return Response(proj_data.data)
 
     # def perform_create(self, serializer):
     #     serializer.save()
+
+    def get_permissions(self):
+        if self.request.method == 'GET' or self.request.method == 'POST':
+            self.permission_classes = [IsUserEnabled, IsAuthenticated]
+        else:
+            self.permission_classes = [IsAuthenticated,IsUserEnabled, IsAdminOrProjectAdminOrReadOnly]
+        return super(ProjectViewSet, self).get_permissions()
 
 
 class ListViewSet(viewsets.ModelViewSet):
     queryset = models.List.objects.all()
     serializer_class = ListSerializer
 
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsUserEnabled, IsAuthenticated]
+        else:
+            self.permission_classes = [IsAuthenticated,IsUserEnabled, IsTeamMemberOrReadOnly_List]
+
+        return super(ListViewSet, self).get_permissions()
+
+
+class CardViewSet(viewsets.ModelViewSet):
+
+    queryset = models.Card.objects.all()
+    serializer_class = CardSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsUserEnabled, IsAuthenticated]
+        else:
+            self.permission_classes = [IsAuthenticated,IsUserEnabled, IsTeamMemberOrReadOnly_Card]
+
+        return super(CardViewSet, self).get_permissions()
+
+class CommentViewSet(viewsets.ModelViewSet):
+
+    queryset = models.Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET' or self.request.method == 'POST':
+            self.permission_classes = [IsUserEnabled, IsAuthenticated]
+        else:
+            self.permission_classes = [IsAuthenticated,IsUserEnabled, IsOwnerOrReadOnly]
+        return super(CommentViewSet, self).get_permissions()
