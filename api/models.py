@@ -16,7 +16,6 @@ class User(AbstractUser):
     User_name- Ishu Gupta
     admin- False
     enabled- True
-    token=""    
     """
     enrollment_no = models.IntegerField(default=0)
     User_name = models.CharField(max_length=100)

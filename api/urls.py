@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet
+from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet, CardViewSet, CommentViewSet
 from django.conf.urls import include
 
 router = DefaultRouter()
@@ -10,6 +10,9 @@ router.register(r'login', LoginViewSet)
 router.register(r'project', ProjectViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'list', ListViewSet)
+router.register(r'card', CardViewSet)
+router.register(r'comment', CommentViewSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),

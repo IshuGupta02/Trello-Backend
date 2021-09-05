@@ -28,7 +28,7 @@ class IsAdminOrProjectAdminOrReadOnly(permissions.BasePermission):
             if p.admin and p == request.user:
                 return True
         for member in obj.admins:
-            if request.user==member
+            if request.user==member:
                 return True
         return False
 
@@ -45,7 +45,7 @@ class IsTeamMemberOrReadOnly_Project(permissions.BasePermission):
             if p.admin and p == request.user:
                 return True
         for member in obj.members:
-            if member == request.user
+            if member == request.user:
                 return True
         return False
 
@@ -64,7 +64,7 @@ class IsTeamMemberOrReadOnly_List(permissions.BasePermission):
         for project in Project.object.all().iterator():
             if project==obj.Project:
                 for member in project.members:
-                    if request.user == member
+                    if request.user == member:
                         return True
 
         return False
