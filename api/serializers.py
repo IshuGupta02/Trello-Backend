@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['enrollment_no','User_name','admin','enabled']
+        fields = ['id','enrollment_no','User_name','admin','enabled']
 
 
 class ProjectSerializer(serializers.ModelSerializer):

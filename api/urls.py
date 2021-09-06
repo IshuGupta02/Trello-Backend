@@ -20,7 +20,6 @@ urlpatterns = [
     # path('login1/', views.login1, name="login-OAuth"),
     # path('login/OAuth', views.login2, name="OAuth"),
     # path('login/after-OAuth', views.login3, name="after-OAuth"),
-
-
+    # path('hello/myprojects/', views.myprojects, name="myprojects"),
 ]
 

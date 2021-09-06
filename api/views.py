@@ -16,7 +16,8 @@ from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSer
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Project, IsTeamMemberOrReadOnly_Card, Not_allowed
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+
 
 class LoginViewSet(viewsets.ModelViewSet):
     """
@@ -27,6 +28,7 @@ class LoginViewSet(viewsets.ModelViewSet):
     """
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
+
 
     @action(detail=False, url_path='login', url_name='login-login')
     def login1(self, req):
@@ -110,17 +112,18 @@ class LoginViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     """
     1. get all users data
-    2. update a users' Admin Status
-    3. update a users' Enabled Status
+    2. update a user's Admin Status
+    3. update a user's Enabled Status
     """
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
 
     # @action(methods= ['GET'], detail=False, url_path='myprojects', url_name='user-myprojects')
     # def projects(self, request):
+    #     print(request.user)
     #     projects_data=ProjectSerializer(request.user.member.all(), many=True)
     #     return Response(projects_data.data)
-    #
+
     # @action(methods= ['GET'],detail=False, url_path='mycards', url_name='user-mycards')
     # def cards(self, request):
     #     cards_data=CardSerializer(request.user.mycards.all(), many=True)
@@ -132,11 +135,20 @@ class UserViewSet(viewsets.ModelViewSet):
         """
         if self.request.method == 'GET':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
-        elif self.request.method == 'POST':
+        elif self.request.method == 'POST' or self.request.method == 'DELETE':
             self.permission_classes = [Not_allowed]
         else:
             self.permission_classes = [IsAuthenticated,IsUserEnabled, IsAdmin]
         return super(UserViewSet, self).get_permissions()
+
+    @action(methods=['GET'], detail=False, url_path='info', url_name='user-info')
+    def info(self, request):
+        # print(request.user)
+        # # user_data=models.User.objects.get(request.user)
+        # return Response("user")
+
+        info = UserSerializer(request.user)
+        return Response(info.data)
 
 class ProjectViewSet(viewsets.ModelViewSet):
     """
