@@ -56,18 +56,17 @@ class IsTeamMemberOrReadOnly_List(permissions.BasePermission):
     All others can only see the project
     """
 
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
         for p in User.objects.all().iterator():
             if p.admin and p == request.user:
                 return True
         for project in Project.objects.all().iterator():
-            if project==obj.Project:
+            if project.id == request.data.get('Project'):
                 for member in project.members.iterator():
                     if request.user == member:
                         return True
-
         return False
 
 class IsTeamMemberOrReadOnly_Card(permissions.BasePermission):
@@ -76,14 +75,14 @@ class IsTeamMemberOrReadOnly_Card(permissions.BasePermission):
     All others can only see the project
     """
 
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
         for p in User.objects.all().iterator():
             if p.admin and p == request.user:
                 return True
         for list in List.objects.all().iterator():
-            if obj.List==list:
+            if list.id == request.data.get('List'):
                 for member in list.Project.members.iterator():
                     if member==request.user:
                         return True

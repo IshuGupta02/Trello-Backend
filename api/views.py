@@ -75,24 +75,38 @@ class LoginViewSet(viewsets.ModelViewSet):
         data_final = res1.json()
 
         isMaintainer = False
+        active=True
         for role in data_final['person']['roles']:
             print(role['role'])
             if (role['role'] == 'Maintainer'):
                 isMaintainer = True
+                if(role['activeStatus']!='ActiveStatus.IS_ACTIVE'):
+                    active=False
+
+        # if not active:
+        #     try:
+        #         models.User.objects.filter(enrollment_no=data_final['username']).delete()
+        #     except:
+        #
+        #     return JsonResponse({'status': 'you are not active anymore'})
 
         if not isMaintainer:
-            return HttpResponse("You are not a maintainer")
+            return JsonResponse({'status': 'you are not a maintainer'})
+
+
+        print(data_final)
 
         try:
             user = models.User.objects.get(enrollment_no=data_final['username'])
+            # models.User.objects.filter(enrollment_no=data_final['username']).delete()
 
         except:
-            print(data_final)
             user_name = data_final['person']['fullName']
+            email_id=data_final['contactInformation']['emailAddress']
             ern = data_final['username']
             isAdmin = False
             isEnabled = True
-            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled)
+            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled, email=email_id)
             print("saving")
             user.save()
             print("saved")

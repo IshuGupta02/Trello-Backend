@@ -21,6 +21,8 @@ class User(AbstractUser):
     User_name = models.CharField(max_length=100)
     admin= models.BooleanField(default=False)
     enabled= models.BooleanField(default=True)
+    email=models.CharField(max_length=254, null=True)
+
 
 class Project(models.Model):
     """
@@ -87,7 +89,7 @@ class Comment(models.Model):
     Comment- "make sure to use pylint"
     """
     # id= models.IntegerField(primary_key=True)
-    User= models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='assignedcards')
+    User= models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='mycomments')
     Card= models.ForeignKey(to=Card, on_delete=models.CASCADE, related_name='commentsofcards')
     date_created = models.DateField(auto_now_add=True)
     Comment=models.CharField(max_length=100)

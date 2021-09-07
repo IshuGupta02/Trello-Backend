@@ -22,7 +22,7 @@ class ListSerializer(serializers.ModelSerializer):
     serializer for List model
     """
 
-    cardsoflist = CardSerializer(many=True)
+    cardsoflist = CardSerializer(many=True, read_only=True)
 
     class Meta:
         model = List
@@ -35,7 +35,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     serializer for Project model
     """
 
-    listsassociated = ListSerializer(many=True)
+    listsassociated = ListSerializer(many=True, read_only=True)
 
     # card = CardSerializer(many=True, read_only=True)
 
@@ -61,11 +61,11 @@ class UserSerializer(serializers.ModelSerializer):
     serializer for User model
     """
 
-    assignedcards= CardSerializer(many= True)
-    member= ProjectSerializer(many=True)
-
+    mycards= CardSerializer(many= True, read_only=True)
+    member= ProjectSerializer(many=True, read_only=True)
+    mycomments=CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'enrollment_no', 'User_name', 'admin', 'enabled', 'assignedcards', 'member']
-        read_only_fields = ['id', 'enrollment_no', 'User_name']
+        fields = ['id', 'enrollment_no', 'User_name', 'admin', 'enabled', 'mycards', 'member', 'mycomments', 'email']
+        read_only_fields = ['id', 'enrollment_no', 'User_name', 'email']
