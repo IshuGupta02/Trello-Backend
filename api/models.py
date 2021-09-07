@@ -22,7 +22,7 @@ class User(AbstractUser):
     admin= models.BooleanField(default=False)
     enabled= models.BooleanField(default=True)
     email=models.CharField(max_length=254, null=True)
-
+    profile = models.FileField(upload_to=None, max_length=254, null=True)
 
 class Project(models.Model):
     """

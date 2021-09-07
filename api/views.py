@@ -104,7 +104,8 @@ class LoginViewSet(viewsets.ModelViewSet):
             ern = data_final['username']
             isAdmin = False
             isEnabled = True
-            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled, email=email_id)
+            profile_url=data_final['person']['displayPicture']
+            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled, email=email_id, profile=profile_url)
             print("saving")
             user.save()
             print("saved")
