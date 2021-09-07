@@ -87,6 +87,7 @@ class LoginViewSet(viewsets.ModelViewSet):
             user = models.User.objects.get(enrollment_no=data_final['username'])
 
         except:
+            print(data_final)
             user_name = data_final['person']['fullName']
             ern = data_final['username']
             isAdmin = False

@@ -35,7 +35,7 @@ class Project(models.Model):
     members- 1,2,3
     admins- 2,3
     """
-    id = models.IntegerField(primary_key=True)
+    # id = models.IntegerField(primary_key=True)
     Project_name = models.CharField(max_length=100)
     wiki= RichTextField()
     date_created = models.DateField(auto_now_add=True)
@@ -53,9 +53,9 @@ class List(models.Model):
     List_name- "todo"
     Project- 1
     """
-    id=models.IntegerField(primary_key=True)
+    # id=models.IntegerField(primary_key=True)
     List_name = models.CharField(max_length=100)
-    Project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    Project = models.ForeignKey(to=Project, on_delete=models.CASCADE, related_name='listsassociated')
 
 class Card(models.Model):
     """
@@ -69,9 +69,9 @@ class Card(models.Model):
     assigned- 1,2
     description-"complete views of trello app"
     """
-    id= models.IntegerField(primary_key=True)
+    # id= models.IntegerField(primary_key=True)
     Card_name = models.CharField(max_length=100)
-    List = models.ForeignKey(to=List, on_delete=models.CASCADE)
+    List = models.ForeignKey(to=List, on_delete=models.CASCADE, related_name='cardsoflist')
     assigned= models.ManyToManyField(User, related_name="mycards")
     description = models.CharField(max_length=500)
 
@@ -86,8 +86,8 @@ class Comment(models.Model):
     Card- 2
     Comment- "make sure to use pylint"
     """
-    id= models.IntegerField(primary_key=True)
-    User= models.ForeignKey(to=User, on_delete=models.CASCADE)
-    Card= models.ForeignKey(to=Card, on_delete=models.CASCADE)
+    # id= models.IntegerField(primary_key=True)
+    User= models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='assignedcards')
+    Card= models.ForeignKey(to=Card, on_delete=models.CASCADE, related_name='commentsofcards')
     date_created = models.DateField(auto_now_add=True)
     Comment=models.CharField(max_length=100)
