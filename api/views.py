@@ -83,22 +83,20 @@ class LoginViewSet(viewsets.ModelViewSet):
                 if(role['activeStatus']!='ActiveStatus.IS_ACTIVE'):
                     active=False
 
-        # if not active:
-        #     try:
-        #         models.User.objects.filter(enrollment_no=data_final['username']).delete()
-        #     except:
-        #
-        #     return JsonResponse({'status': 'you are not active anymore'})
+        if not active:
+            try:
+                models.User.objects.filter(enrollment_no=data_final['username']).delete()
+            except:
+                error=True
+            return JsonResponse({'status': 'you are not active anymore'})
 
         if not isMaintainer:
             return JsonResponse({'status': 'you are not a maintainer'})
-
 
         print(data_final)
 
         try:
             user = models.User.objects.get(enrollment_no=data_final['username'])
-            # models.User.objects.filter(enrollment_no=data_final['username']).delete()
 
         except:
             user_name = data_final['person']['fullName']
