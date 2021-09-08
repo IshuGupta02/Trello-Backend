@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api',
+    'rest_framework',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +137,24 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'api.User'
+
+# REST_FRAMEWORK={
+#         'DEFAULT AUTHENTICATION CLASSES' : (
+#             'rest_framework.authentication.SessionAuthentication'
+#             ),
+#         'DEFAULT_PERMISSION_CLASSES':(
+#             'rest_framework.permissions.IsAuthenticated',
+#         ),
+#     }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
+
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
