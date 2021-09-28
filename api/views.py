@@ -153,7 +153,11 @@ class LoginViewSet(viewsets.ModelViewSet):
         """
         if request.user.is_authenticated:
             logout(request)
-            return JsonResponse({'status': 'successful'})
+            res= Response({'status': 'successful'}, status=status.HTTP_202_ACCEPTED)
+            res['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+            res['Access-Control-Allow-Credentials']='true'
+            # return JsonResponse({'status': 'successful'})
+            return res
         else:
             return HttpResponseForbidden()
 
