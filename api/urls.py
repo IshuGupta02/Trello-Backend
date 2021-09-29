@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet, CardViewSet, CommentViewSet
+from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet, CardViewSet, CommentViewSet, check
 from django.conf.urls import include
 
 router = DefaultRouter()
@@ -16,6 +16,7 @@ router.register(r'comment', CommentViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('check/', check, name='check_login'),
     # path('', views.apiOverview, name="api-overview"),
     # path('login1/', views.login1, name="login-OAuth"),
     # path('login/OAuth', views.login2, name="OAuth"),

@@ -1,7 +1,7 @@
 """
 Contains all views
 """
-
+from rest_framework.decorators import api_view
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponseBadRequest
@@ -18,6 +18,40 @@ from rest_framework.views import APIView
 from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Project, IsTeamMemberOrReadOnly_Card, Not_allowed
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
+
+@api_view(['GET'])
+def check(request):
+    """
+    checks whether or not a user is logged in
+    """
+    # print("print1")
+    # if(request.user.is_authenticated):
+    #     print("print2")
+    #     res= Response({'status': 'loggedIn'}, status=status.HTTP_202_ACCEPTED)
+    # else:
+    #     print("print3")
+    #     res= Response({'status': 'NotloggedIn'}, status=status.HTTP_202_ACCEPTED)
+
+    # print("print4")
+    # res['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+    # res['Access-Control-Allow-Credentials']='true'
+    # print("print5")
+    # return res
+
+    msg = {
+        "loggedin": False
+    }
+    if request.user.is_authenticated:
+        msg["loggedin"] = True
+        res = Response(msg, status=status.HTTP_202_ACCEPTED)
+        res['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000'
+        res['Access-Control-Allow-Credentials'] = 'true'
+        return res
+    else:
+        res = Response(msg, status=status.HTTP_202_ACCEPTED)
+        res['Access-Control-Allow-Origin'] = 'http://127.0.0.1:3000'
+        res['Access-Control-Allow-Credentials'] = 'true'
+        return res
 
 class LoginViewSet(viewsets.ModelViewSet):
     """
@@ -180,6 +214,11 @@ class UserViewSet(viewsets.ModelViewSet):
     # def cards(self, request):
     #     cards_data=CardSerializer(request.user.mycards.all(), many=True)
     #     return Response(cards_data.data)
+    def dispatch(self, *args, **kwargs):
+        response = super(UserViewSet, self).dispatch(*args, **kwargs)
+        response['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+        response['Access-Control-Allow-Credentials']='true'
+        return response
 
     def get_permissions(self):
         """
@@ -324,3 +363,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAuthenticated,IsUserEnabled, IsOwnerOrReadOnly]
         return super(CommentViewSet, self).get_permissions()
+
+
+   
