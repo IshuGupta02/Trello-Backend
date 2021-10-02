@@ -11,7 +11,7 @@ class IsUserEnabled(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        # print(request.user)
+        print(request.user)
         if not request.user.enabled:
             return False
         return True

@@ -163,19 +163,26 @@ REST_FRAMEWORK = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000'
-]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3000',
+#     'http://127.0.0.1:3000'
+# ]
 
 
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:3000'
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://localhost:3000'
+# ]
+
+# SESSION_ENGINE='django.contrib.sessions.backends.signed_cookies'
+CSRF_COOKIE_NAME='frontend_csrftoken'
+
+# SESSION_COOKIE_NAME = 'api_session'
+
+# CSRF_COOKIE_NAME = 'api_csrftoken'
 
 # CORS_ORIGIN_WHITELIST = [
 #     "http://localhost:3000",
