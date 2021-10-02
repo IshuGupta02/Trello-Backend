@@ -178,7 +178,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # ]
 
 # SESSION_ENGINE='django.contrib.sessions.backends.signed_cookies'
-CSRF_COOKIE_NAME='frontend_csrftoken'
+# CSRF_COOKIE_NAME='csrftoken'
 
 # SESSION_COOKIE_NAME = 'api_session'
 
