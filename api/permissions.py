@@ -93,8 +93,9 @@ class IsAdmin(permissions.BasePermission):
     App admins have extra powers of changing any app admin to normal member or vice versa
     """
     def has_permission(self, request, view):
+        print("checking permissions")
         for p in User.objects.all().iterator():
-            if p.admin and p == request.User:
+            if p.admin and p == request.user:
                 return True
         return False
 
@@ -105,7 +106,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        return obj.User == request.User
+        return obj.User == request.user
 
 class Not_allowed(permissions.BasePermission):
     """
