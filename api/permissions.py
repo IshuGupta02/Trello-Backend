@@ -56,18 +56,29 @@ class IsTeamMemberOrReadOnly_List(permissions.BasePermission):
     All others can only see the project
     """
 
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         for p in User.objects.all().iterator():
             if p.admin and p == request.user:
                 return True
-        for project in Project.objects.all().iterator():
-            if project.id == request.data.get('Project'):
-                for member in project.members.iterator():
-                    if request.user == member:
-                        return True
+        for member in obj.Project.members.all():
+            if member == request.user:
+                return True
         return False
+
+    # def has_permission(self, request, view):
+    #     if request.method in permissions.SAFE_METHODS:
+    #         return True
+    #     for p in User.objects.all().iterator():
+    #         if p.admin and p == request.user:
+    #             return True
+    #     for project in Project.objects.all().iterator():
+    #         if project.id == request.data.get('Project'):
+    #             for member in project.members.iterator():
+    #                 if request.user == member:
+    #                     return True
+    #     return False
 
 class IsTeamMemberOrReadOnly_Card(permissions.BasePermission):
     """
@@ -75,18 +86,34 @@ class IsTeamMemberOrReadOnly_Card(permissions.BasePermission):
     All others can only see the project
     """
 
-    def has_permission(self, request, view):
+    def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         for p in User.objects.all().iterator():
             if p.admin and p == request.user:
                 return True
-        for list in List.objects.all().iterator():
-            if list.id == request.data.get('List'):
-                for member in list.Project.members.iterator():
-                    if member==request.user:
-                        return True
+        for member in obj.List.Project.members.all():
+            if member == request.user:
+                return True
         return False
+
+    # def has_permission(self, request, view):
+    #     # print("checking")
+    #     if request.method in permissions.SAFE_METHODS:
+    #         return True
+        
+    #     # print(request.method, request.data)
+    #     for p in User.objects.all().iterator():
+    #         if p.admin and p == request.user:
+    #             return True
+    #     for list in List.objects.all().iterator():
+            
+    #         if list.id == request.data.get('List'):
+    #             print("inside")
+    #             for member in list.Project.members.iterator():
+    #                 if member.id==request.user.id:
+    #                     return True
+    #     return False
 
 class IsAdmin(permissions.BasePermission):
     """

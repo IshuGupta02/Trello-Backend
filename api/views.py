@@ -12,7 +12,7 @@ from .login_config import config
 from . import models
 from django.contrib.auth import login, logout
 from rest_framework import viewsets
-from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSerializer,CommentSerializer
+from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSerializer,CommentSerializer, ProjectSerializer1, CardSerializer1
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Project, IsTeamMemberOrReadOnly_Card, Not_allowed
@@ -336,6 +336,7 @@ class CardViewSet(viewsets.ModelViewSet):
         anyone can get information about any card
         only project members can create/update/delete a card
         """
+        print("checking perms")
         if self.request.method == 'GET':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
@@ -363,6 +364,35 @@ class CommentViewSet(viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAuthenticated,IsUserEnabled, IsOwnerOrReadOnly]
         return super(CommentViewSet, self).get_permissions()
+
+
+class ProjectDataViewSet(viewsets.ModelViewSet):
+    """
+    1. get all projects
+    2. update a project- members, admins, wiki, project_name, due_date
+    3. delete a project
+    4. create new project
+    """
+    queryset = models.Project.objects.all()
+    serializer_class = ProjectSerializer1
+
+    def dispatch(self, *args, **kwargs):
+        response = super(ProjectDataViewSet, self).dispatch(*args, **kwargs)
+        response['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+        response['Access-Control-Allow-Credentials']='true'
+
+        return response
+
+class CardDataViewSet(viewsets.ModelViewSet):
+    """
+    1. get all cards
+    2. create a new card in a project
+    3. update a card- card_name, assigned_to,description
+    4. delete a card
+    """
+
+    queryset = models.Card.objects.all()
+    serializer_class = CardSerializer1
 
 
    
