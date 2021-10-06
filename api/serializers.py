@@ -5,11 +5,36 @@ contains all serializers used in the api
 from rest_framework import serializers
 from .models import User, List, Comment, Project, Card
 
+class UserSerializer1(serializers.ModelSerializer):
+    """
+    serializer for User model - restricted data
+    """
+
+    class Meta:
+        model = User
+        fields = ['id', 'enrollment_no', 'User_name', 'email', 'profile']
+        read_only_fields = ['id', 'enrollment_no', 'User_name', 'email', 'profile']
+
 
 class CardSerializer(serializers.ModelSerializer):
     """
     serializer for Card model
     """
+
+    # assigned=UserSerializer1(many=True, read_only=True)
+
+    class Meta:
+        model = Card
+        fields = ['id', 'Card_name', 'List', 'assigned', 'description']
+        read_only_fields = ['id']
+
+
+class CardSerializer1(serializers.ModelSerializer):
+    """
+    serializer for Card model
+    """
+
+    assigned=UserSerializer1(many=True, read_only=True)
 
     class Meta:
         model = Card
@@ -22,7 +47,7 @@ class ListSerializer(serializers.ModelSerializer):
     serializer for List model
     """
 
-    cardsoflist = CardSerializer(many=True, read_only=True)
+    cardsoflist = CardSerializer1(many=True, read_only=True)
 
     class Meta:
         model = List
@@ -36,6 +61,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     """
 
     listsassociated = ListSerializer(many=True, read_only=True)
+    # members = UserSerializer1(many=True, read_only=True)
 
     # card = CardSerializer(many=True, read_only=True)
 
@@ -69,3 +95,21 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'enrollment_no', 'User_name', 'admin', 'enabled', 'mycards', 'member', 'mycomments', 'email', 'profile']
         read_only_fields = ['id', 'enrollment_no', 'User_name', 'email', 'profile']
+
+
+class ProjectSerializer1(serializers.ModelSerializer):
+    """
+    serializer for Project model
+    """
+
+    listsassociated = ListSerializer(many=True, read_only=True)
+    members = UserSerializer1(many=True, read_only=True)
+
+    # card = CardSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ['id', 'Project_name', 'wiki', 'date_created', 'due_date', 'members', 'admins', 'listsassociated']
+        read_only_fields = ['id', 'date_created']
+
+
