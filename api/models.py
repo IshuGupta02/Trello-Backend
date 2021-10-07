@@ -6,6 +6,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from datetime import datetime
 
+
 class User(AbstractUser):
     """
     User details: 
@@ -19,10 +20,11 @@ class User(AbstractUser):
     """
     enrollment_no = models.IntegerField(default=0)
     User_name = models.CharField(max_length=100)
-    admin= models.BooleanField(default=False)
-    enabled= models.BooleanField(default=True)
-    email=models.CharField(max_length=254, null=True)
+    admin = models.BooleanField(default=False)
+    enabled = models.BooleanField(default=True)
+    email = models.CharField(max_length=254, null=True)
     profile = models.FileField(upload_to=None, max_length=254, null=True)
+
 
 class Project(models.Model):
     """
@@ -39,11 +41,12 @@ class Project(models.Model):
     """
     # id = models.IntegerField(primary_key=True)
     Project_name = models.CharField(max_length=100)
-    wiki= RichTextField()
+    wiki = RichTextField()
     date_created = models.DateField(auto_now_add=True)
-    due_date= models.DateField()
-    members= models.ManyToManyField(User, related_name="member")
-    admins= models.ManyToManyField(User, related_name="admins_Project")
+    due_date = models.DateField()
+    members = models.ManyToManyField(User, related_name="member")
+    admins = models.ManyToManyField(User, related_name="admins_Project")
+
 
 class List(models.Model):
     """
@@ -58,6 +61,7 @@ class List(models.Model):
     # id=models.IntegerField(primary_key=True)
     List_name = models.CharField(max_length=100)
     Project = models.ForeignKey(to=Project, on_delete=models.CASCADE, related_name='listsassociated')
+
 
 class Card(models.Model):
     """
@@ -74,8 +78,9 @@ class Card(models.Model):
     # id= models.IntegerField(primary_key=True)
     Card_name = models.CharField(max_length=100)
     List = models.ForeignKey(to=List, on_delete=models.CASCADE, related_name='cardsoflist')
-    assigned= models.ManyToManyField(User, related_name="mycards")
+    assigned = models.ManyToManyField(User, related_name="mycards")
     description = models.CharField(max_length=500)
+
 
 class Comment(models.Model):
     """
@@ -89,7 +94,7 @@ class Comment(models.Model):
     Comment- "make sure to use pylint"
     """
     # id= models.IntegerField(primary_key=True)
-    User= models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='mycomments')
-    Card= models.ForeignKey(to=Card, on_delete=models.CASCADE, related_name='commentsofcards')
+    User = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='mycomments')
+    Card = models.ForeignKey(to=Card, on_delete=models.CASCADE, related_name='commentsofcards')
     date_created = models.DateField(auto_now_add=True)
-    Comment=models.CharField(max_length=100)
+    Comment = models.CharField(max_length=100)
