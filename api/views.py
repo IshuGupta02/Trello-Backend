@@ -126,15 +126,17 @@ class LoginViewSet(viewsets.ModelViewSet):
             print(role['role'])
             if (role['role'] == 'Maintainer'):
                 isMaintainer = True
-                if(role['activeStatus']!='ActiveStatus.IS_ACTIVE'):
-                    active=False
+                # if(role['activeStatus']!='ActiveStatus.IS_ACTIVE'):
+                #     active=False
 
-        if not active:
-            try:
-                models.User.objects.filter(enrollment_no=data_final['username']).delete()
-            except:
-                error=True
-            return JsonResponse({'status': 'you are not active anymore'})
+        print(data_final)
+
+        # if not active:
+        #     try:
+        #         models.User.objects.filter(enrollment_no=data_final['username']).delete()
+        #     except:
+        #         error=True
+        #     return JsonResponse({'status': 'you are not active anymore'})
 
         if not isMaintainer:
             return JsonResponse({'status': 'you are not a maintainer'})
@@ -145,13 +147,15 @@ class LoginViewSet(viewsets.ModelViewSet):
             user = models.User.objects.get(enrollment_no=data_final['username'])
 
         except:
+            print("saving data")
+            username= data_final['username']
             user_name = data_final['person']['fullName']
             email_id=data_final['contactInformation']['emailAddress']
             ern = data_final['username']
             isAdmin = False
             isEnabled = True
             profile_url=data_final['person']['displayPicture']
-            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled, email=email_id, profile=profile_url)
+            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled, email=email_id, profile=profile_url, username=username)
             print("saving")
             user.save()
             print("saved")
@@ -314,8 +318,10 @@ class ListViewSet(viewsets.ModelViewSet):
         only project members can create/update/delete a list
         """
         if self.request.method == 'GET':
+            print("get")
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
+            print("NOTget")
             self.permission_classes = [IsAuthenticated,IsUserEnabled, IsTeamMemberOrReadOnly_List]
 
         return super(ListViewSet, self).get_permissions()
@@ -341,7 +347,11 @@ class CardViewSet(viewsets.ModelViewSet):
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
             self.permission_classes = [IsAuthenticated,IsUserEnabled, IsTeamMemberOrReadOnly_Card]
+            # self.permission_classes = [IsTeamMemberOrReadOnly_Card]
+            # self.permission_classes = [IsAuthenticated,IsUserEnabled]
 
+
+        # print("checked perms")
         return super(CardViewSet, self).get_permissions()
 
 class CommentViewSet(viewsets.ModelViewSet):
