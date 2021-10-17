@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ckeditor',
     'corsheaders',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +77,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trello.wsgi.application'
+ASGI_APPLICATION = 'trello.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database

@@ -148,7 +148,3 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'enrollment_no', 'User_name', 'admin', 'enabled', 'mycards', 'member', 'mycomments', 'email', 'profile']
         read_only_fields = ['id', 'enrollment_no', 'User_name', 'email', 'profile']
 
-
-
-
-

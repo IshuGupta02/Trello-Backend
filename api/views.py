@@ -405,4 +405,11 @@ class CardDataViewSet(viewsets.ModelViewSet):
     serializer_class = CardSerializer1
 
 
-   
+
+def index(request):
+    return render(request, 'index.html', {})
+
+def room(request, room_name):
+    return render(request, 'room.html', {
+        'room_name': room_name
+    })   
