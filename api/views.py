@@ -412,6 +412,12 @@ class CardCommentsViewSet(viewsets.ModelViewSet):
     queryset = models.Card.objects.all()
     serializer_class = CardCommentSerializer
 
+    def dispatch(self, *args, **kwargs):
+        response = super(CardCommentsViewSet, self).dispatch(*args, **kwargs)
+        response['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+        response['Access-Control-Allow-Credentials']='true'
+
+        return response
 
 
 # comments using websockets example
