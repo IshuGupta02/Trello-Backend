@@ -406,10 +406,65 @@ class CardDataViewSet(viewsets.ModelViewSet):
 
 
 
+# comments using websockets example
 def index(request):
     return render(request, 'index.html', {})
 
 def room(request, room_name):
     return render(request, 'room.html', {
         'room_name': room_name
-    })   
+    })
+
+
+# email
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
+
+
+@api_view(['GET','POST'])
+def success(request):
+    # print(json.loads(request.body)['name'])
+    # name= json.loads(request.body)['name']
+    # print(request.GET)
+    # print(request.POST)
+
+    # print(request.body)
+    
+    # print("body: ", request.body)
+    print("data: ", request.data)
+
+    # card= json.loads(request.body)['card']
+    # list1= json.loads(request.body)['list']
+    # project= json.loads(request.body)['project']
+    # email= json.loads(request.body)['email']
+
+    card= request.data['Card']
+    list1= request.data['list']
+    project= request.data['project']
+    email= request.data['email']
+
+    
+    template= render_to_string('email_template.html', {'card': card, 'list': list1, 'project': project })
+   
+    email=EmailMessage(
+        'TRELLO | new card assigned',
+        template,
+        settings.EMAIL_HOST_USER,
+        email
+    )
+
+    email.fall_silently=False
+    email.send()
+
+    res= Response({'done': 'true'}, status=status.HTTP_202_ACCEPTED)
+    res['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+    res['Access-Control-Allow-Credentials']='true'
+    return res
+    # {
+    #     "card": "card1",
+    #     "list":"list1",
+    #     "email":["ishugupta0298@gmail.com"],
+    #     "project":"none"
+    # }
+

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet, CardViewSet, CommentViewSet, check, ProjectDataViewSet, CardDataViewSet
+from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet, CardViewSet, CommentViewSet, check, ProjectDataViewSet, CardDataViewSet, success
 from django.conf.urls import include
 from . import views
 
@@ -21,6 +21,7 @@ urlpatterns = [
     
     path('', include(router.urls)),
     path('check/', check, name='check_login'),
+    path('success/', success, name='success'),
     path('<str:room_name>/', views.room, name='room'),
     # path('', views.apiOverview, name="api-overview"),
     # path('login1/', views.login1, name="login-OAuth"),
