@@ -116,6 +116,31 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ['id', 'User', 'Card', 'date_created', 'Comment']
         read_only_fields = ['id', 'User', 'date_created', 'Card']
 
+class CommentSerializer1(serializers.ModelSerializer):
+    """
+    serializer for Comment model
+    """
+
+    User = UserSerializer1(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'User', 'Card', 'date_created', 'Comment']
+        read_only_fields = ['id', 'User', 'date_created', 'Card']
+
+
+class CardCommentSerializer(serializers.ModelSerializer):
+    """
+    for accessing with comments of a particular card
+    """
+
+    commentsofcards= CommentSerializer1(many=True, read_only=True)
+
+    class Meta:
+        model = Card
+        fields = ['id', 'Card_name', 'List', 'assigned', 'description']
+        read_only_fields = ['id']
+
 
 class ProjectSerializer1(serializers.ModelSerializer):
     """
