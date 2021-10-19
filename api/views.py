@@ -404,6 +404,14 @@ class CardDataViewSet(viewsets.ModelViewSet):
     queryset = models.Card.objects.all()
     serializer_class = CardSerializer1
 
+class CardCommentsViewSet(viewsets.ModelViewSet):
+    """
+    1. get all comments and basic details of a card
+    """
+
+    queryset = models.Card.objects.all()
+    serializer_class = CardCommentSerializer
+
 
 
 # comments using websockets example
@@ -424,22 +432,10 @@ from django.template.loader import render_to_string
 
 @api_view(['GET','POST'])
 def success(request):
-    # print(json.loads(request.body)['name'])
-    # name= json.loads(request.body)['name']
-    # print(request.GET)
-    # print(request.POST)
-
-    # print(request.body)
     
-    # print("body: ", request.body)
     print("data: ", request.data)
 
-    # card= json.loads(request.body)['card']
-    # list1= json.loads(request.body)['list']
-    # project= json.loads(request.body)['project']
-    # email= json.loads(request.body)['email']
-
-    card= request.data['Card']
+     card= request.data['Card']
     list1= request.data['list']
     project= request.data['project']
     email= request.data['email']

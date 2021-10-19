@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet, CardViewSet, CommentViewSet, check, ProjectDataViewSet, CardDataViewSet, success
+from .views import LoginViewSet, UserViewSet, ProjectViewSet, ListViewSet, CardViewSet, CommentViewSet, check, ProjectDataViewSet, CardDataViewSet, success, CardCommentsViewSet
 from django.conf.urls import include
 from . import views
 
@@ -15,6 +15,8 @@ router.register(r'card', CardViewSet)
 router.register(r'comment', CommentViewSet)
 router.register(r'projectData', ProjectDataViewSet)
 router.register(r'cardData', CardDataViewSet)
+router.register(r'cardComments', CardCommentsViewSet)
+
 
 
 urlpatterns = [
