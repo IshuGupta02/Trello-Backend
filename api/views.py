@@ -12,7 +12,7 @@ from .login_config import config
 from . import models
 from django.contrib.auth import login, logout
 from rest_framework import viewsets
-from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSerializer,CommentSerializer, ProjectSerializer1, CardSerializer1
+from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSerializer,CommentSerializer, ProjectSerializer1, CardSerializer1, CardCommentSerializer
 from rest_framework.decorators import action
 from rest_framework.views import APIView
 from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Project, IsTeamMemberOrReadOnly_Card, Not_allowed
@@ -441,7 +441,7 @@ def success(request):
     
     print("data: ", request.data)
 
-     card= request.data['Card']
+    card= request.data['Card']
     list1= request.data['list']
     project= request.data['project']
     email= request.data['email']

@@ -95,7 +95,7 @@ class Comment(models.Model):
     Comment=models.CharField(max_length=100)
 
     class Meta(object):
-        ordering = ['date_created']
+        ordering = ['-date_created']
 
     def __str__(self):
         return self.Comment
