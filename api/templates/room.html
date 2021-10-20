@@ -41,7 +41,8 @@
             const message = messageInputDom.value;
             chatSocket.send(JSON.stringify({
                 'message': message,
-                'card':1
+                'card':40
+                
             }));
             messageInputDom.value = '';
         };

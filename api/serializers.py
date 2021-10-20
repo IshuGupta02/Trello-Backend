@@ -138,7 +138,7 @@ class CardCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Card
-        fields = ['id', 'Card_name', 'List', 'assigned', 'description']
+        fields = ['id', 'Card_name', 'List', 'assigned', 'description', 'commentsofcards']
         read_only_fields = ['id']
 
 
