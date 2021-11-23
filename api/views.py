@@ -10,8 +10,9 @@ from .login_config import config
 from . import models
 from django.contrib.auth import login, logout
 from rest_framework import viewsets
-from .serializers import UserSerializer, ProjectSerializer, ListSerializer, CardSerializer, CommentSerializer, \
-    ProjectSerializer1, CardSerializer1
+
+from .serializers import UserSerializer,ProjectSerializer,ListSerializer,CardSerializer,CommentSerializer, ProjectSerializer1, CardSerializer1, CardCommentSerializer
+
 from rest_framework.decorators import action
 from .permissions import IsUserEnabled, IsAdminOrProjectAdminOrReadOnly, IsAdmin, IsOwnerOrReadOnly, \
     IsTeamMemberOrReadOnly_List, IsTeamMemberOrReadOnly_Card, Not_allowed
@@ -98,15 +99,19 @@ class LoginViewSet(viewsets.ModelViewSet):
         for role in data_final['person']['roles']:
             if role['role'] == 'Maintainer':
                 isMaintainer = True
-                if role['activeStatus'] != 'ActiveStatus.IS_ACTIVE':
-                    active = False
 
-        if not active:
-            try:
-                models.User.objects.filter(enrollment_no=data_final['username']).delete()
-            except:
-                error = True
-            return JsonResponse({'status': 'you are not active anymore'})
+                # if(role['activeStatus']!='ActiveStatus.IS_ACTIVE'):
+                #     active=False
+
+        print(data_final)
+
+        # if not active:
+        #     try:
+        #         models.User.objects.filter(enrollment_no=data_final['username']).delete()
+        #     except:
+        #         error=True
+        #     return JsonResponse({'status': 'you are not active anymore'})
+
 
         if not isMaintainer:
             return JsonResponse({'status': 'you are not a maintainer'})
@@ -115,14 +120,17 @@ class LoginViewSet(viewsets.ModelViewSet):
             user = models.User.objects.get(enrollment_no=data_final['username'])
 
         except:
+            print("saving data")
+            username= data_final['username']
             user_name = data_final['person']['fullName']
             email_id = data_final['contactInformation']['emailAddress']
             ern = data_final['username']
             isAdmin = False
             isEnabled = True
-            profile_url = data_final['person']['displayPicture']
-            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled, email=email_id,
-                               profile=profile_url)
+
+            profile_url=data_final['person']['displayPicture']
+            user = models.User(enrollment_no=ern, User_name=user_name, admin=isAdmin, enabled=isEnabled, email=email_id, profile=profile_url, username=username)
+
             print("saving")
             user.save()
             print("saved")
@@ -242,9 +250,13 @@ class ListViewSet(viewsets.ModelViewSet):
         only project members can create/update/delete a list
         """
         if self.request.method == 'GET':
+            print("get")
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
-            pass
+
+            print("NOTget")
+            self.permission_classes = [IsAuthenticated,IsUserEnabled, IsTeamMemberOrReadOnly_List]
+
 
         return super(ListViewSet, self).get_permissions()
 
@@ -272,8 +284,14 @@ class CardViewSet(viewsets.ModelViewSet):
         if self.request.method == 'GET':
             self.permission_classes = [IsUserEnabled, IsAuthenticated]
         else:
-            pass
 
+            self.permission_classes = [IsAuthenticated,IsUserEnabled, IsTeamMemberOrReadOnly_Card]
+            # self.permission_classes = [IsTeamMemberOrReadOnly_Card]
+            # self.permission_classes = [IsAuthenticated,IsUserEnabled]
+
+
+
+        # print("checked perms")
         return super(CardViewSet, self).get_permissions()
 
 
@@ -328,3 +346,72 @@ class CardDataViewSet(viewsets.ModelViewSet):
     """
     queryset = models.Card.objects.all()
     serializer_class = CardSerializer1
+
+
+class CardCommentsViewSet(viewsets.ModelViewSet):
+    """
+    1. get all comments and basic details of a card
+    """
+
+    queryset = models.Card.objects.all()
+    serializer_class = CardCommentSerializer
+
+    def dispatch(self, *args, **kwargs):
+        response = super(CardCommentsViewSet, self).dispatch(*args, **kwargs)
+        response['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+        response['Access-Control-Allow-Credentials']='true'
+
+        return response
+
+
+# comments using websockets example
+def index(request):
+    return render(request, 'index.html', {})
+
+def room(request, room_name):
+    return render(request, 'room.html', {
+        'room_name': room_name
+    })
+
+
+# email
+from django.core.mail import EmailMessage
+from django.conf import settings
+from django.template.loader import render_to_string
+
+
+@api_view(['GET','POST'])
+def success(request):
+    
+    print("data: ", request.data)
+
+    card= request.data['Card']
+    list1= request.data['list']
+    project= request.data['project']
+    email= request.data['email']
+
+    
+    template= render_to_string('email_template.html', {'card': card, 'list': list1, 'project': project })
+   
+    email=EmailMessage(
+        'TRELLO | new card assigned',
+        template,
+        settings.EMAIL_HOST_USER,
+        email
+    )
+
+    email.fall_silently=False
+    email.send()
+
+    res= Response({'done': 'true'}, status=status.HTTP_202_ACCEPTED)
+    res['Access-Control-Allow-Origin']='http://127.0.0.1:3000'
+    res['Access-Control-Allow-Credentials']='true'
+    return res
+    # {
+    #     "card": "card1",
+    #     "list":"list1",
+    #     "email":["ishugupta0298@gmail.com"],
+    #     "project":"none"
+    # }
+
+

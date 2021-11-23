@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from .auth import MYSQL_username,MYSQL_password
+from .auth import MYSQL_username,MYSQL_password, EMAIL_username, EMAIL_password
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ckeditor',
     'corsheaders',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +77,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'trello.wsgi.application'
+ASGI_APPLICATION = 'trello.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 
 
 # Database
@@ -140,6 +152,13 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = EMAIL_username
+EMAIL_HOST_PASSWORD = EMAIL_password
 
 AUTH_USER_MODEL = 'api.User'
 

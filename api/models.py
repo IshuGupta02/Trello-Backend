@@ -97,4 +97,12 @@ class Comment(models.Model):
     User = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='mycomments')
     Card = models.ForeignKey(to=Card, on_delete=models.CASCADE, related_name='commentsofcards')
     date_created = models.DateField(auto_now_add=True)
-    Comment = models.CharField(max_length=100)
+
+    Comment=models.CharField(max_length=100)
+
+    class Meta(object):
+        ordering = ['-date_created']
+
+    def __str__(self):
+        return self.Comment
+
